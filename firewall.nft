@@ -1,0 +1,22 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet example_table {
+  chain example_chain {
+
+    tcp dport {ssh, http} accept
+
+    icmp type echo-request accept
+
+    type filter hook input priority 0; policy drop;
+
+    tcp dport http limit
+
+    udp dport http limit
+
+    reject with icmp type net-unreachable
+
+    iptables-save
+  }
+}
